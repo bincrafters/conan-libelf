@@ -33,8 +33,9 @@ class LibelfConan(ConanFile):
     def configure_autotools(self):
         if not self.autotools:
             args = ['--enable-shared={}'.format('yes' if self.options.shared else 'no')]
+            if self.settings.os == "Macos":
+                args.append('--disable-compat')
             self.autotools = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
-            self.autotools.fpic = True
             self.autotools.configure(configure_dir=self.source_subfolder, args=args)
         return self.autotools
 
