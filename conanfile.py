@@ -45,7 +45,8 @@ class LibelfConan(ConanFile):
         self.copy(pattern="COPYING.LIB", dst="licenses", src=self.source_subfolder)
         autotools = self.configure_autotools()
         autotools.install()
-        shutil.rmtree(os.path.join(self.package_folder, "share"))
+        shutil.rmtree(os.path.join(self.package_folder, "share"), ignore_errors=True)
+        shutil.rmtree(os.path.join(self.package_folder, "lib", "locale"), ignore_errors=True)
         if self.options.shared:
             os.remove(os.path.join(self.package_folder, "lib", "libelf.a"))
 
