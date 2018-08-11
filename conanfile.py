@@ -21,6 +21,10 @@ class LibelfConan(ConanFile):
     autotools = None
     source_subfolder = "source_subfolder"
 
+    def config_options(self):
+        if self.settings.os == "Macos":
+            del self.options.shared
+
     def configure(self):
         del self.settings.compiler.libcxx
 
@@ -32,7 +36,9 @@ class LibelfConan(ConanFile):
 
     def configure_autotools(self):
         if not self.autotools:
-            args = ['--enable-shared={}'.format('yes' if self.options.shared else 'no')]
+            args = None
+            if self.settings.os != "Macos":
+                args = ['--enable-shared={}'.format('yes' if self.options.shared else 'no')]
             self.autotools = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
             self.autotools.configure(configure_dir=self.source_subfolder, args=args)
         return self.autotools
@@ -47,7 +53,7 @@ class LibelfConan(ConanFile):
         autotools.install()
         shutil.rmtree(os.path.join(self.package_folder, "share"), ignore_errors=True)
         shutil.rmtree(os.path.join(self.package_folder, "lib", "locale"), ignore_errors=True)
-        if self.options.shared and self.settings.os == "Linux":
+        if self.settings.os == "Linux" and self.options.shared:
             os.remove(os.path.join(self.package_folder, "lib", "libelf.a"))
 
     def package_info(self):
