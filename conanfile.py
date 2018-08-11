@@ -44,7 +44,6 @@ class LibelfConan(ConanFile):
 
     def build_cmake(self):
         shutil.copyfile(os.path.join("cmake", "CMakeLists.txt"), os.path.join(self.source_subfolder, "CMakeLists.txt"))
-        shutil.move(os.path.join(self.source_subfolder, "lib", "sys_elf.h.w32"), os.path.join(self.source_subfolder, "lib", "sys_elf.h"))
         cmake = self.configure_cmake()
         cmake.build()
 

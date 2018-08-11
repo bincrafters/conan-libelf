@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.11)
 project(elf C)
 
+file(RENAME "${PROJECT_SOURCE_DIR}/lib/sys_elf.h.w32" "${PROJECT_SOURCE_DIR}/lib/sys_elf.h")
+file(RENAME "${PROJECT_SOURCE_DIR}/lib/config.h.w32" "${PROJECT_SOURCE_DIR}/config.h")
+
 file(GLOB_RECURSE SOURCES "${PROJECT_SOURCE_DIR}/lib/*.c")
 file(GLOB_RECURSE HEADERS "${PROJECT_SOURCE_DIR}/lib/*.h")
 
