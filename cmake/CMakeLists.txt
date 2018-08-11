@@ -13,11 +13,12 @@ if(MSVC)
 endif()
 
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION lib
+    ARCHIVE DESTINATION lib
 	LIBRARY DESTINATION lib
 	RUNTIME DESTINATION bin
-  PUBLIC_HEADER DESTINATION include
+    PUBLIC_HEADER DESTINATION include/libelf
 )
 
-install(FILES "${PROJECT_SOURCE_DIR}/lib/sys_elf.h" DESTINATION include/libelf)
-install(FILES "${PROJECT_SOURCE_DIR}/lib/elf_repl.h" DESTINATION include/libelf)
+install(FILES "${PROJECT_SOURCE_DIR}/lib/libelf.h" DESTINATION include)
+install(FILES "${PROJECT_SOURCE_DIR}/lib/gelf.h"   DESTINATION include)
+install(FILES "${PROJECT_SOURCE_DIR}/lib/nlist.h"  DESTINATION include)
