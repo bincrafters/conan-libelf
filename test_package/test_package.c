@@ -17,6 +17,10 @@ int main(int argc , char **argv) {
         return EXIT_FAILURE;
     }
 
+#ifdef _WIN32
+    return EXIT_SUCCESS;
+#endif
+
     if ((fd = open(argv[0], O_RDONLY , 0)) < 0) {
         printf("open %s failed\n", argv [0]);
         return EXIT_FAILURE;
