@@ -2,7 +2,7 @@
 
 | Bintray | Windows | Linux & macOS |
 |:--------:|:---------:|:-----------------:|
-|BINTRAY_BADGE_URL|APPVEYOR_BADGE_URL|TRAVIS_BADGE_URL|
+|[![Download](https://api.bintray.com/packages/bincrafters/public-conan/libelf%3Abincrafters/images/download.svg)](https://bintray.com/bincrafters/public-conan/libelf%3Abincrafters/_latestVersion)|[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-libelf?svg=true)](https://ci.appveyor.com/project/BinCrafters/conan-libelf)|[![Build Status](https://travis-ci.org/bincrafters/conan-libelf.svg)](https://travis-ci.org/bincrafters/conan-libelf)|
 
 ## Conan.io Information
 
