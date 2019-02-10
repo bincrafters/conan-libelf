@@ -73,6 +73,9 @@ class LibelfConan(ConanFile):
             os.remove(os.path.join(self.package_folder, "lib", "libelf.a"))
 
     def build(self):
+        tools.replace_in_file(os.path.join(self.source_subfolder, "lib", "Makefile.in"),
+                              "$(LINK_SHLIB)",
+                              "$(LINK_SHLIB) $(LDFLAGS)")
         if self.settings.os == "Windows":
             self.build_cmake()
         else:

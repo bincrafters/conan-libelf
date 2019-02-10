@@ -2,7 +2,11 @@
 #include <stdlib.h>
 
 #include <fcntl.h>
+#ifdef _MSC_VER
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 
 #include "libelf.h"
 
@@ -21,7 +25,11 @@ int main(int argc , char **argv) {
     return EXIT_SUCCESS;
 #endif
 
+#ifdef _MSVC_VER
+    if ((fd = _open(argv[0], _O_RDONLY , 0)) < 0) {
+#else
     if ((fd = open(argv[0], O_RDONLY , 0)) < 0) {
+#endif
         printf("open %s failed\n", argv [0]);
         return EXIT_FAILURE;
     }
@@ -50,7 +58,11 @@ int main(int argc , char **argv) {
     printf("%s: %s\n", argv[0], k);
     elf_end(e);
 
+#ifdef _MSVC_VER
+    _close(fd);
+#else
     close(fd);
+#endif
 
     return EXIT_SUCCESS;
 }
