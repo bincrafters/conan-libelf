@@ -18,8 +18,8 @@ class LibelfConan(ConanFile):
     exports = ["LICENSE.md"]
     exports_sources = ["CMakeLists.txt", "cmake/CMakeLists.txt"]
     settings = "os", "arch", "compiler", "build_type"
-    options = {"shared": [True, False]}
-    default_options = {'shared': 'False'}
+    options = {"shared": [True, False], "fPIC": [True, False]}
+    default_options = {"shared": False, "fPIC": True}
     generators = "cmake"
     _autotools = None
     _source_subfolder = "source_subfolder"
@@ -28,6 +28,7 @@ class LibelfConan(ConanFile):
     def config_options(self):
         if self.settings.os != "Linux":
             del self.options.shared
+            del self.options.fPIC
 
     def configure(self):
         del self.settings.compiler.libcxx
@@ -57,7 +58,7 @@ class LibelfConan(ConanFile):
         if not self._autotools:
             args = None
             if self.settings.os == "Linux":
-                args = ['--enable-shared={}'.format('yes' if self.options.shared else 'no')]
+                args = ["--enable-shared={}".format("yes" if self.options.shared else "no")]
             self._autotools = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
             self._autotools.configure(configure_dir=self._source_subfolder, args=args)
         return self._autotools
