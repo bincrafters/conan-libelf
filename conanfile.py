@@ -14,15 +14,16 @@ class LibelfConan(ConanFile):
     homepage = "https://directory.fsf.org/wiki/Libelf"
     author = "Bincrafters <bincrafters@gmail.com>"
     license = "LGPL-2.0"
+    topics = ("conan", "elf", "fsf", "libelf", "object-file")
     exports = ["LICENSE.md"]
     exports_sources = ["CMakeLists.txt", "cmake/CMakeLists.txt"]
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False]}
-    default_options = "shared=False"
+    default_options = {'shared': 'False'}
     generators = "cmake"
-    autotools = None
-    source_subfolder = "source_subfolder"
-    build_subfolder = "build_subfolder"
+    _autotools = None
+    _source_subfolder = "source_subfolder"
+    _build_subfolder = "build_subfolder"
 
     def config_options(self):
         if self.settings.os != "Linux":
@@ -32,40 +33,41 @@ class LibelfConan(ConanFile):
         del self.settings.compiler.libcxx
 
     def source(self):
+        sha256 = "7b69d752e76b6ce80bb8c00139a7a8b9a5cf71eb3d0b7b6d11269c6fc7314705"
         source_url = "http://www.mr511.de/software"
-        tools.get("{0}/{1}-{2}.tar.gz".format(source_url, self.name, self.version))
+        tools.get("{0}/{1}-{2}.tar.gz".format(source_url, self.name, self.version), sha256=sha256)
         extracted_dir = self.name + "-" + self.version
-        os.rename(extracted_dir, self.source_subfolder)
+        os.rename(extracted_dir, self._source_subfolder)
 
-    def configure_cmake(self):
+    def _configure_cmake(self):
         cmake = CMake(self)
-        cmake.configure(build_folder=self.build_subfolder)
+        cmake.configure(build_folder=self._build_subfolder)
         return cmake
 
-    def build_cmake(self):
-        shutil.copyfile(os.path.join("cmake", "CMakeLists.txt"), os.path.join(self.source_subfolder, "CMakeLists.txt"))
-        cmake = self.configure_cmake()
+    def _build_cmake(self):
+        shutil.copyfile(os.path.join("cmake", "CMakeLists.txt"), os.path.join(self._source_subfolder, "CMakeLists.txt"))
+        cmake = self._configure_cmake()
         cmake.build()
 
-    def package_cmake(self):
-        cmake = self.configure_cmake()
+    def _package_cmake(self):
+        cmake = self._configure_cmake()
         cmake.install()
 
-    def configure_autotools(self):
-        if not self.autotools:
+    def _configure_autotools(self):
+        if not self._autotools:
             args = None
             if self.settings.os == "Linux":
                 args = ['--enable-shared={}'.format('yes' if self.options.shared else 'no')]
-            self.autotools = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
-            self.autotools.configure(configure_dir=self.source_subfolder, args=args)
-        return self.autotools
+            self._autotools = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
+            self._autotools.configure(configure_dir=self._source_subfolder, args=args)
+        return self._autotools
 
-    def build_autotools(self):
-        autotools = self.configure_autotools()
+    def _build_autotools(self):
+        autotools = self._configure_autotools()
         autotools.make()
 
-    def package_autotools(self):
-        autotools = self.configure_autotools()
+    def _package_autotools(self):
+        autotools = self._configure_autotools()
         autotools.install()
         shutil.rmtree(os.path.join(self.package_folder, "share"), ignore_errors=True)
         shutil.rmtree(os.path.join(self.package_folder, "lib", "locale"), ignore_errors=True)
@@ -73,20 +75,20 @@ class LibelfConan(ConanFile):
             os.remove(os.path.join(self.package_folder, "lib", "libelf.a"))
 
     def build(self):
-        tools.replace_in_file(os.path.join(self.source_subfolder, "lib", "Makefile.in"),
+        tools.replace_in_file(os.path.join(self._source_subfolder, "lib", "Makefile.in"),
                               "$(LINK_SHLIB)",
                               "$(LINK_SHLIB) $(LDFLAGS)")
         if self.settings.os == "Windows":
-            self.build_cmake()
+            self._build_cmake()
         else:
-            self.build_autotools()
+            self._build_autotools()
 
     def package(self):
-        self.copy(pattern="COPYING.LIB", dst="licenses", src=self.source_subfolder)
+        self.copy(pattern="COPYING.LIB", dst="licenses", src=self._source_subfolder)
         if self.settings.os == "Windows":
-            self.package_cmake()
+            self._package_cmake()
         else:
-            self.package_autotools()
+            self._package_autotools()
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
