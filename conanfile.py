@@ -40,6 +40,7 @@ class LibelfConan(ConanFile):
         try:
             tools.get("{0}/{1}-{2}.tar.gz".format(source_url, self.name, self.version), sha256=sha256)
         except ConanException:
+            self.output.warn("Downloding libelf from mirror")
             mirror_url = "http://repository.timesys.com/buildsources/l/libelf/{0}-{1}/{0}-{1}.tar.gz"
             tools.get(mirror_url.format(self.name, self.version), sha256=sha256)
         extracted_dir = self.name + "-" + self.version
