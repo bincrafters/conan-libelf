@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from conans import ConanFile, AutoToolsBuildEnvironment, CMake, tools
+from conans.errors import ConanException
 import os
 import shutil
 
@@ -34,9 +35,14 @@ class LibelfConan(ConanFile):
         del self.settings.compiler.libcxx
 
     def source(self):
-        sha256 = "7b69d752e76b6ce80bb8c00139a7a8b9a5cf71eb3d0b7b6d11269c6fc7314705"
+        sha256 = "591a9b4ec81c1f2042a97aa60564e0cb79d041c52faa7416acb38bc95bd2c76d"
         source_url = "http://www.mr511.de/software"
-        tools.get("{0}/{1}-{2}.tar.gz".format(source_url, self.name, self.version), sha256=sha256)
+        try:
+            tools.get("{0}/{1}-{2}.tar.gz".format(source_url, self.name, self.version), sha256=sha256)
+        except ConanException:
+            self.output.warn("Downloding libelf from mirror")
+            mirror_url = "http://repository.timesys.com/buildsources/l/libelf/{0}-{1}/{0}-{1}.tar.gz"
+            tools.get(mirror_url.format(self.name, self.version), sha256=sha256)
         extracted_dir = self.name + "-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
 
