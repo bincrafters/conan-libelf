@@ -42,7 +42,7 @@ class LibelfConan(ConanFile):
         except ConanException:
             self.output.warn("Downloding libelf from mirror")
             mirror_url = "http://repository.timesys.com/buildsources/l/libelf/{0}-{1}/{0}-{1}.tar.gz"
-            tools.get(mirror_url.format(self.name, self.version), sha256=sha256)
+            tools.get(mirror_url.format(self.name, self.version), sha256=sha256, overwrite=True)
         extracted_dir = self.name + "-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
 
